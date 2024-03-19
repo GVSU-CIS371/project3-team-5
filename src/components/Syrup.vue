@@ -1,5 +1,5 @@
 <template>
-  <div class="syrup"></div>
+  <div class="syrup" :style="{ backgroundColor: selectedColor }"></div>
 </template>
 
 <script setup lang="ts">
@@ -29,7 +29,13 @@ const Syrups: Syrup[] = [
 const props = withDefaults(defineProps<Prop>(), {
   name: "Vanilla",
 });
+
+const selectedColor = computed(() => {
+  const selectedSyrup = Syrups.find(syrup => syrup.name === props.name);
+  return selectedSyrup ? selectedSyrup.color : "";
+});
 </script>
+
 <style lang="scss" scoped>
 .syrup {
   transform: translateY(400%);
@@ -40,3 +46,4 @@ const props = withDefaults(defineProps<Prop>(), {
   z-index: 2;
 }
 </style>
+

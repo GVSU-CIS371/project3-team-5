@@ -1,5 +1,5 @@
 <template>
-  <div class="baseBeverage"></div>
+  <div :class="baseClass"></div>
 </template>
 
 <script setup lang="ts">
@@ -29,6 +29,11 @@ const Bases: BaseBeverage[] = [
 const props = withDefaults(defineProps<Prop>(), {
   name: "Black Tea",
 });
+
+const baseClass = computed(() => {
+  const selectedBase = Bases.find(base => base.name === props.name);
+  return selectedBase?.name.toLowerCase().replace(/\s/g, '-');
+});
 </script>
 
 <style scoped>
@@ -41,4 +46,18 @@ const props = withDefaults(defineProps<Prop>(), {
   z-index: 300;
   /* // border-radius: 0.05em 0.05em 2.2em 2.2em; */
 }
+
+/* Dynamically add background color based on selected base beverage */
+.black-tea {
+  background-color: #8B4513;
+}
+
+.green-tea {
+  background-color: #C8E6C9;
+}
+
+.coffee {
+  background-color: #6F4E37;
+}
 </style>
+
