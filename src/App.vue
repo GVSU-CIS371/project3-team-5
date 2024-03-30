@@ -1,74 +1,81 @@
 <template>
   <div>
-    <!-- Beverage component with dynamic props -->
-    <Beverage 
+    <Beverage
       :isIced="currentTemp === 'Cold'"
-      :creamer="selectedCreamer"
-      :syrup="selectedSyrup"
-      :beverage="selectedBaseBeverage"
+      :creamer="currentCreamer"
+      :syrup="currentSyrup"
+      :beverage="currentBeverage"
     />
-
-    <!-- Temperature selection -->
     <ul>
-      <li v-for="temp in temps" :key="temp">
-        <label>
-          <input
-            type="radio"
-            name="temperature"
-            :id="`r${temp}`"
-            :value="temp"
-            v-model="currentTemp"
-          />
-          {{ temp }}
-        </label>
+      <li>
+        <template v-for="temp in temps" :key="temp">
+          <label>
+            <input
+              type="radio"
+              name="temperature"
+              :id="`rtemp${temp}`"
+              :value="temp"
+              v-model="currentTemp"
+            />
+            {{ temp }}
+          </label>
+        </template>
+      </li>
+      <li>
+        <template v-for="creamer in creamers" :key="creamer">
+          <label>
+            <input
+              type="radio"
+              name="Creamer"
+              :id="`rcreamer${creamer}`"
+              :value="creamer"
+              v-model="currentCreamer"
+            />
+            {{ creamer }}
+          </label>
+        </template>
+      </li>
+      <li>
+        <template v-for="syrup in syrups" :key="syrup">
+          <label>
+            <input
+              type="radio"
+              name="Syrup"
+              :id="`rsyrup${syrup}`"
+              :value="syrup"
+              v-model="currentSyrup"
+            />
+            {{ syrup }}
+          </label>
+        </template>
+      </li>
+      <li>
+        <template v-for="baseBeverage in baseBeverages" :key="baseBeverage">
+          <label>
+            <input
+              type="radio"
+              name="Base Beverage"
+              :id="`rbase${baseBeverage}`"
+              :value="baseBeverage"
+              v-model="currentBeverage"
+            />
+            {{ baseBeverage }}
+          </label>
+        </template>
       </li>
     </ul>
 
-    <!-- Creamer selection -->
-    <ul>
-      <li v-for="creamerOption in creamerOptions" :key="creamerOption">
-        <label>
-          <input
-            type="radio"
-            name="creamer"
-            :id="`c${creamerOption}`"
-            :value="creamerOption"
-            v-model="selectedCreamer"
-          />
-          {{ creamerOption }}
-        </label>
-      </li>
-    </ul>
+    <!-- Input field and button for adding beverage -->
+    <div>
+      <label for="name">Name:</label>
+      <input type="text" id="name" v-model="recipeName">
+      <button @click="makeBeverage">Make Beverage</button>
+    </div>
 
-    <!-- Syrup selection -->
+    <!-- Display recipes -->
     <ul>
-      <li v-for="syrupOption in syrupOptions" :key="syrupOption">
-        <label>
-          <input
-            type="radio"
-            name="syrup"
-            :id="`s${syrupOption}`"
-            :value="syrupOption"
-            v-model="selectedSyrup"
-          />
-          {{ syrupOption }}
-        </label>
-      </li>
-    </ul>
-
-    <!-- Base beverage selection -->
-    <ul>
-      <li v-for="baseOption in baseBeverageOptions" :key="baseOption">
-        <label>
-          <input
-            type="radio"
-            name="baseBeverage"
-            :id="`b${baseOption}`"
-            :value="baseOption"
-            v-model="selectedBaseBeverage"
-          />
-          {{ baseOption }}
-        </label>
+      <li v-for="recipe in recipes" :key="recipe.name">
+        <button @click="selectRecipe(recipe)">{{ recipe.name }}</button>
       </li>
     </ul>
   </div>
@@ -77,20 +84,49 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Beverage from "./components/Beverage.vue";
+import { useBeverageStore, Recipe } from './store';
 
-// Reactive variables for temperature, creamer, syrup, and base beverage options
+// Define reactive data
 const temps = ref(["Hot", "Cold"]);
 const currentTemp = ref("Hot");
+const creamers = ref(["None", "Milk", "Cream", "Half & Half"]);
+const currentCreamer = ref("None");
+const syrups = ref(["None", "Vanilla", "Caramel", "Hazelnut"]);
+const currentSyrup = ref("None");
+const baseBeverages = ref(["Coffee", "Green Tea", "Black Tea"]);
+const currentBeverage = ref("Coffee");
+const recipeName = ref('');
 
-const creamerOptions = ref(["None", "Milk", "Cream", "Half & Half"]);
-const selectedCreamer = ref("None");
 
-const syrupOptions = ref(["None", "Vanilla", "Caramel", "Hazelnut"]);
-const selectedSyrup = ref("None");
+const beverageStore = useBeverageStore();
 
-const baseBeverageOptions = ref(["Coffee", "Green Tea", "Black Tea"]);
-const selectedBaseBeverage = ref("Coffee");
+
+const makeBeverage = () => {
+  const recipe: Recipe = {
+    name: recipeName.value,
+    temperature: currentTemp.value,
+    creamer: currentCreamer.value,
+    syrup: currentSyrup.value,
+    baseBeverage: currentBeverage.value
+  };
+  beverageStore.addRecipe(recipe);
+  recipeName.value = '';
+};
+
+
+
+
+const selectRecipe = (recipe: Recipe) => {
+  currentTemp.value = recipe.temperature;
+  currentCreamer.value = recipe.creamer;
+  currentSyrup.value = recipe.syrup;
+  currentBeverage.value = recipe.baseBeverage;
+};
+
+
+const recipes = beverageStore.getAllRecipes();
 </script>
+
 
 <style lang="scss">
 body,
@@ -107,4 +143,3 @@ ul {
   list-style: none;
 }
 </style>
-

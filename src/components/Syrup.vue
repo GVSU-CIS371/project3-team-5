@@ -1,5 +1,5 @@
 <template>
-  <div class="syrup" :style="{ backgroundColor: selectedColor }"></div>
+  <div :style="dynamicStyle" class="syrup"></div>
 </template>
 
 <script setup lang="ts">
@@ -29,13 +29,19 @@ const Syrups: Syrup[] = [
 const props = withDefaults(defineProps<Prop>(), {
   name: "Vanilla",
 });
-
-const selectedColor = computed(() => {
-  const selectedSyrup = Syrups.find(syrup => syrup.name === props.name);
-  return selectedSyrup ? selectedSyrup.color : "";
+const dynamicStyle = computed(() => {
+  const syrup = Syrups.find((syrup) => syrup.name === props.name);
+  return {
+    background: `repeating-linear-gradient(
+      45deg,
+      ${syrup?.color},
+      ${syrup?.color} 10px,
+      rgba(225, 207, 149, 1) 10px,
+      rgba(225, 207, 149, 1) 20px
+    )`,
+  };
 });
 </script>
-
 <style lang="scss" scoped>
 .syrup {
   transform: translateY(400%);
@@ -46,4 +52,3 @@ const selectedColor = computed(() => {
   z-index: 2;
 }
 </style>
-

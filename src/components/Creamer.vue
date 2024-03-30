@@ -1,6 +1,6 @@
 <template>
-  <div class="froth" :style="{ backgroundColor: selectedColor }">
-    <div v-for="foam in foamCount" :key="foam" class="foam"></div>
+  <div class="froth">
+    <div v-for=" in 5" class="foam" :style="dynamicStyle"></div>
   </div>
 </template>
 
@@ -31,18 +31,13 @@ const Creamers: Creamer[] = [
 const props = withDefaults(defineProps<Prop>(), {
   name: "Milk",
 });
-
-const selectedColor = computed(() => {
-  const selectedCreamer = Creamers.find(creamer => creamer.name === props.name);
-  return selectedCreamer ? selectedCreamer.color : "";
-});
-
-const foamCount = computed(() => {
-  // You can define the logic to determine foam count based on selected creamer here
-  return 5; // Example value, you can adjust as needed
+const dynamicStyle = computed(() => {
+  const creamer = Creamers.find((creamer) => creamer.name === props.name);
+  return {
+    background: creamer?.color,
+  };
 });
 </script>
-
 <style lang="scss" scoped>
 .froth {
   overflow: visible;
@@ -62,8 +57,34 @@ const foamCount = computed(() => {
   position: absolute;
 }
 
-/* Define styles for different foam elements */
+.foam:nth-child(1) {
+  top: 0px;
+  left: -3px;
+}
 
-/* You can adjust styles for different foam elements here */
+.foam:nth-child(2) {
+  top: 0px;
+  left: 55px;
+}
+
+.foam:nth-child(3) {
+  width: 30px;
+  height: 30px;
+  border-radius: 40px;
+  top: 3px;
+  left: 30px;
+}
+
+.foam:nth-child(4) {
+  width: 30px;
+  height: 30px;
+  border-radius: 45px;
+  top: 5px;
+  right: -2px;
+}
+
+.foam:nth-child(5) {
+  top: 2px;
+  right: 10px;
+}
 </style>
-

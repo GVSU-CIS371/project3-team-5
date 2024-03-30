@@ -15,7 +15,6 @@
     </Contents>
   </Mug>
 </template>
-
 <script setup lang="ts">
 import Contents from "./Contents.vue";
 import Mug from "./Mug.vue";
@@ -31,5 +30,5 @@ type Props = {
   syrup: string;
   beverage: string;
 };
-const { isIced, creamer, syrup, beverage } = defineProps<Props>();
+defineProps<Props>();
 </script>
